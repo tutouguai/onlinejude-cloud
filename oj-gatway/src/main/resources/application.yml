@@ -1,0 +1,44 @@
+server:
+  port: 10010
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开启从注册中心动态创建路由的功能，利用微服务名进行路由
+          lower-case-service-id: true
+      routes:
+        - id: search-service
+          uri: lb://search-service
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - StripPrefix=2
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+#zuul:
+#  prefix: /api # 添加路由前缀
+#  retryable: true
+#  routes:
+#    item-service: /item/**
+#    upload-service: # 这里是路由id，随意写
+#      path: /upload/** # 这里是映射路径
+#      serviceId: upload-service # 指定服务名称
+#      strip-prefix: false
+#ribbon:
+#  ConnectTimeout: 1000 # 连接超时时间(ms)
+#  ReadTimeout: 3500 # 通信超时时间(ms)
+#  OkToRetryOnAllOperations: true # 是否对所有操作重试
+#  MaxAutoRetriesNextServer: 1 # 同一服务不同实例的重试次数
+#  MaxAutoRetries: 1 # 同一实例的重试次数
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMillisecond: 5000 # 熔断超时时长：5000ms
